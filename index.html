@@ -800,18 +800,31 @@
             <!-- <a href="#">Sk</a>
             <a href="#">In</a> -->
           </div>
-          <form class="newsletter" id="subscribeForm">
+          <form class="newsletter" action="https://script.google.com/macros/s/AKfycbw5Kbh5LoEAmLSkESNbpyOIZfz43hBQH6bPZx48gCfhpekoK43NxzhY-4rUHyibGE-U/exec"
+  method="POST"
+  target="hiddenFrame"
+  id="subscribeForm">
             <input
               class="input"
               type="email"
-        id="subscriberEmail"
-        placeholder="Enter your email"
-        required
+              placeholder="Enter your email"
+              required
               aria-label="Email address"
             />
+            <input
+        type="hidden"
+        name="source"
+        value="Website"
+    >
             <button class="btn btn-primary" type="submit">Subscribe</button>
           </form>
-          <p id="subscribeMessage"></p>
+          <iframe
+    name="hiddenFrame"
+    id="hiddenFrame"
+    style="display:none;"
+></iframe>
+
+<p id="subscribeMessage"></p>
         </div>
         <nav class="footer-links" aria-label="Footer">
           <div class="footer-col">
@@ -848,43 +861,16 @@
       </div>
     </footer>
     <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwwlylo9sjSuB8N_B0R12fmP3ErnJB6vtelGa1EqSO7p60ojPxyUk-ptVMunAyxwDTj/exec";
-
-const form = document.getElementById("subscribeForm");
-const emailInput = document.getElementById("subscriberEmail");
+  const form = document.getElementById("subscribeForm");
 const message = document.getElementById("subscribeMessage");
 
-form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const email = emailInput.value.trim();
-
-    if (!email) return;
-
+form.addEventListener("submit", function () {
     message.textContent = "Subscribing...";
 
-    try {
-        const response = await fetch(SCRIPT_URL, {
-            method: "POST",
-            body: JSON.stringify({
-                email: email,
-                source: window.location.hostname
-            })
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            message.textContent = "Thanks for subscribing!";
-            form.reset();
-        } else {
-            message.textContent = "Something went wrong.";
-        }
-
-    } catch (error) {
-        console.error(error);
-        message.textContent = "Unable to subscribe. Please try again.";
-    }
+    setTimeout(() => {
+        message.textContent = "Thanks for subscribing!";
+        form.reset();
+    }, 1500);
 });
 </script>
     <script>
