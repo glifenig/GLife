@@ -59,7 +59,7 @@ export default async function handler(req, res) {
                 body: JSON.stringify({
 
                     from:
-                        "glifenig.com <info@glifenig.com>",
+                        "GLife Nigeria <info@glifenig.com>",
 
                     to:
                         [process.env.RECEIVER_EMAIL],
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
                         `New Website Message: ${subject}`,
 
                     html: `
-                        <h2>New Message From Your Website</h2>
+                        <h2>New Message From The GLife Website</h2>
 
                         <p>
                             <strong>Name:</strong>
@@ -136,7 +136,7 @@ export default async function handler(req, res) {
                 body: JSON.stringify({
 
                     from:
-                        "glifenig.com <info@glifenig.com>",
+                        "GLife Nigeria <info@glifenig.com>",
 
                     to:
                         [email],
@@ -172,7 +172,7 @@ export default async function handler(req, res) {
 
                         <p>
                             Thank you,<br>
-                            Your Website Team
+                            GLife Nigeria Team
                         </p>
                     `
                 })
