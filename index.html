@@ -800,10 +800,10 @@
             <!-- <a href="#">Sk</a>
             <a href="#">In</a> -->
           </div>
-          <form class="newsletter" action="https://script.google.com/macros/s/AKfycbw5Kbh5LoEAmLSkESNbpyOIZfz43hBQH6bPZx48gCfhpekoK43NxzhY-4rUHyibGE-U/exec"
-  method="POST"
-  target="hiddenFrame"
-  id="subscribeForm">
+          <form class="newsletter" action="https://script.google.com/macros/s/AKfycbxH5CGbvOvTir3ilsMD9OZ3hLI8k1I26pHpLmO-Ydfg41zncet1hXPvMBvmtleE1gWl3Q/exec"
+    method="POST"
+    target="hiddenFrame"
+    id="subscribeForm">
             <input
               class="input"
               type="email"
@@ -814,13 +814,12 @@
             <input
         type="hidden"
         name="source"
-        value="Website"
+        value="GLife.Nig Website"
     >
             <button class="btn btn-primary" type="submit">Subscribe</button>
           </form>
           <iframe
     name="hiddenFrame"
-    id="hiddenFrame"
     style="display:none;"
 ></iframe>
 
@@ -864,11 +863,11 @@
   const form = document.getElementById("subscribeForm");
 const message = document.getElementById("subscribeMessage");
 
-form.addEventListener("submit", function () {
-    message.textContent = "Subscribing...";
+form.addEventListener("submit", () => {
+    message.textContent = "Submitting...";
 
     setTimeout(() => {
-        message.textContent = "Thanks for subscribing!";
+        message.textContent = "Thank you for subscribing!";
         form.reset();
     }, 1500);
 });
