@@ -711,17 +711,13 @@
             </dd>
           </dl>
           <form
-            class="form-grid reveal"
-            action="forms/contact.php"
-            method="post"
+            id="contactForm"
           >
             <div class="field">
               <label for="c-name">Name</label
               ><input
                 class="input"
-                id="c-name"
-                name="name"
-                type="text"
+                type="text" id="name" name="name"
                 placeholder="Your name"
                 required
               />
@@ -730,9 +726,7 @@
               <label for="c-email">Email</label
               ><input
                 class="input"
-                id="c-email"
-                name="email"
-                type="email"
+                type="email" id="email" name="email"
                 placeholder="Your email"
                 required
               />
@@ -741,9 +735,7 @@
               <label for="c-subject">Subject</label
               ><input
                 class="input"
-                id="c-subject"
-                name="subject"
-                type="text"
+                type="text" id="subject" name="subject"
                 placeholder="Subject"
                 required
               />
@@ -752,16 +744,16 @@
               <label for="c-msg">Message</label
               ><textarea
                 class="input"
-                id="c-msg"
-                name="message"
+               id="message" name="message"
                 placeholder="Message"
                 required
               ></textarea>
             </div>
             <div class="field full">
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" id="submitButton" class="btn btn-primary">
                 Send Message
               </button>
+              <div id="formStatus"></div>
             </div>
           </form>
         </div>
@@ -848,28 +840,87 @@
       </div>
     </footer>
     <script>
-      document.getElementById('subscriberForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  try {
-    const response = await fetch('https://script.google.com/macros/s/AKfycbwsDOA-dBGPilxZWs9PXVFq7tyh7tH4ec6GIHzjzSsG4GHul30HyBZ0OsmCCEWHJh0fBA/exec', {
-      method: 'POST',
-      body: JSON.stringify({ email: document.getElementById('email').value })
-    });
-    
-    const result = await response.json();
-    console.log('Response:', result);
-    
-    if (result.success) {
-      document.getElementById('subscribeMessage').textContent = '✓ Thanks!';
-      document.getElementById('subscriberForm').reset();
-    } else {
-      document.getElementById('subscribeMessage').textContent = 'Error: ' + result.error;
+const form = document.getElementById("contactForm");
+const button = document.getElementById("submitButton");
+const status = document.getElementById("formStatus");
+
+form.addEventListener("submit", async function (event) {
+
+    event.preventDefault();
+
+    // Change button while sending
+    button.disabled = true;
+    button.textContent = "Sending...";
+    status.textContent = "";
+
+    // Get form values
+    const formData = {
+        name: document.getElementById("name").value.trim(),
+
+        email: document.getElementById("email").value.trim(),
+
+        subject: document.getElementById("subject").value.trim(),
+
+        message: document.getElementById("message").value.trim()
+    };
+
+
+    try {
+
+        // Send data to your Vercel API
+        const response = await fetch("/api/contact", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(formData)
+        });
+
+
+        const result = await response.json();
+
+
+        if (response.ok && result.success) {
+
+            // Success
+            status.textContent =
+                "✓ Your message was sent successfully.";
+
+            status.style.color = "green";
+
+            // Clear form
+            form.reset();
+
+        } else {
+
+            // Server returned an error
+            status.textContent =
+                result.message ||
+                "Unable to send your message.";
+
+            status.style.color = "red";
+        }
+
+
+    } catch (error) {
+
+        console.error("Error:", error);
+
+        status.textContent =
+            "Something went wrong. Please try again.";
+
+        status.style.color = "red";
+
+    } finally {
+
+        // Restore button
+        button.disabled = false;
+        button.textContent = "Send Message";
     }
-  } catch (error) {
-    console.error('Fetch error:', error);
-    document.getElementById('subscribeMessage').textContent = 'Error: ' + error.message;
-  }
+
 });
 </script>
     <script>
