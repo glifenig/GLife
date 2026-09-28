@@ -1,24 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Articles | GLife Nigeria</title>
-<meta name="description" id="m-desc" content="Insights, news and guides from GLife Nigeria.">
-<link rel="canonical" id="m-canon" href="https://glifenig.com/articles">
-<meta property="og:type" content="website">
-<meta property="og:title" id="og-title" content="Articles | GLife Nigeria">
-<meta property="og:description" id="og-desc" content="Insights, news and guides from GLife Nigeria.">
-<meta property="og:image" id="og-img" content="">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="/assets/articles.css">
-<!-- optional: <link rel="stylesheet" href="/your-existing-style.css"> -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Articles | Glife Nigeria</title>
+  <meta name="description" id="m-desc" content="Insights, updates and practical guides on web, mobile and custom software from Glife Nigeria." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" id="m-canon" href="https://www.glifenig.com/articles" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Glife Nigeria" />
+  <meta property="og:title" id="og-title" content="Articles | Glife Nigeria" />
+  <meta property="og:description" id="og-desc" content="Insights, updates and practical guides from Glife Nigeria." />
+  <meta property="og:image" id="og-img" content="https://www.glifenig.com/assets/img/hero-logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="icon" href="/assets/img/logo.png" />
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/articles.css" />
 </head>
-<body class="gl">
-<!-- PASTE YOUR EXISTING SITE HEADER/NAV HERE -->
-<main id="app"><div class="gl-wrap"><div class="gl-skel" style="margin-top:80px"></div></div></main>
-<!-- PASTE YOUR EXISTING FOOTER HERE (with data-glife-subscribe on its form) -->
-<script type="module" src="/assets/subscribe.js"></script>
-<script type="module" src="/assets/articles.js"></script>
+<body data-theme="goodlife" class="gl">
+  <nav class="nav" aria-label="Primary navigation">
+    <a class="nav-brand" href="/" aria-label="GLife.Nig home">
+      <img src="/assets/img/logo.png" alt="" /><span>GLife.Nig</span>
+    </a>
+    <div class="nav-links">
+      <a href="/#about">About</a>
+      <a href="/#services">Services</a>
+      <a href="/articles">Articles</a>
+      <a href="/#faq">FAQ</a>
+      <a href="/#contact">Contact</a>
+    </div>
+    <a class="btn btn-primary nav-cta" href="/#contact">Get Started</a>
+  </nav>
+
+  <main id="app" class="gl-page">
+    <div class="gl-wrap"><div class="gl-skel"></div></div>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div class="footer-brand">
+        <img class="footer-logo" src="/assets/img/hero-logo.png" alt="GLife logo" />
+        <h2 class="footer-title">GLife Nigeria Ltd</h2>
+        <p class="footer-copy">Solving Problems Through Technology.</p>
+        <div class="social-links" aria-label="Social media">
+          <a href="https://x.com/glife_nig?s=21" rel="noreferrer" target="_blank">X</a>
+          <a href="https://www.facebook.com/share/19RuCZ2BMc/?mibextid=wwXIfr" rel="noreferrer" target="_blank">Fb</a>
+          <a href="https://www.instagram.com/glife.nig?stkn=MWlhYXVtYTJ0MnNoaQ==" rel="noreferrer" target="_blank">Ig</a>
+        </div>
+        <form class="newsletter" id="subscriberForm" data-glife-subscribe novalidate>
+          <input class="input" type="email" id="subscribeEmail" name="subscribeEmail" placeholder="Enter your email" required aria-label="Email address" />
+          <button class="btn btn-primary" type="submit">Subscribe</button>
+        </form>
+        <p id="subscribeMessage" role="status"></p>
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <div class="footer-col">
+          <h3>Company</h3>
+          <a href="/#about">About Us</a><a href="/#services">Our Work</a><a href="/#contact">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h3>Resources</h3>
+          <a href="/articles">Articles</a><a href="/#faq">FAQ</a>
+        </div>
+        <div class="footer-col">
+          <h3>Start a Project</h3>
+          <p>Have something you want to build?</p>
+          <a href="/#contact">Get Started</a>
+        </div>
+      </nav>
+    </div>
+    <div class="wrap footer-bottom">
+      <span>&copy; Copyright <strong>Glife Nigeria Ltd</strong>. All Rights Reserved</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/assets/subscribe.js"></script>
+  <script type="module" src="/assets/articles.js"></script>
 </body>
 </html>
