@@ -860,17 +860,16 @@
     console.log('Response:', result);
     
     if (result.success) {
-      document.getElementById('message').textContent = '✓ Thanks!';
+      document.getElementById('subscribeMessage').textContent = '✓ Thanks!';
       document.getElementById('subscriberForm').reset();
     } else {
-      document.getElementById('message').textContent = 'Error: ' + result.error;
+      document.getElementById('subscribeMessage').textContent = 'Error: ' + result.error;
     }
   } catch (error) {
     console.error('Fetch error:', error);
-    document.getElementById('message').textContent = 'Error: ' + error.message;
+    document.getElementById('subscribeMessage').textContent = 'Error: ' + error.message;
   }
 });
-
 </script>
     <script>
       (() => {
