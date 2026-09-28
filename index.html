@@ -847,7 +847,7 @@
       </div>
     </footer>
     <script>
-  document.getElementById('subscriberForm').addEventListener('submit', async (e) => {
+      document.getElementById('subscriberForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   
   try {
@@ -857,14 +857,20 @@
     });
     
     const result = await response.json();
+    console.log('Response:', result);
+    
     if (result.success) {
-      document.getElementById('subscribeMessage').textContent = '✓ Thanks!';
+      document.getElementById('message').textContent = '✓ Thanks!';
       document.getElementById('subscriberForm').reset();
+    } else {
+      document.getElementById('message').textContent = 'Error: ' + result.error;
     }
   } catch (error) {
-    document.getElementById('subscribeMessage').textContent = 'Error. Try again.';
+    console.error('Fetch error:', error);
+    document.getElementById('message').textContent = 'Error: ' + error.message;
   }
 });
+
 </script>
     <script>
       (() => {
