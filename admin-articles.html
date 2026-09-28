@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Admin · Articles | GLife Nigeria</title>
+<link rel="stylesheet" href="/assets/articles.css">
+</head>
+<body class="gl"><div class="gl-wrap">
+<section id="login" class="ad-card hide" style="max-width:420px;margin:80px auto">
+  <h2>Admin sign in</h2>
+  <label>Email</label><input id="em" type="email" autocomplete="username">
+  <label>Password</label><input id="pw" type="password" autocomplete="current-password">
+  <p id="loginMsg" class="ad-msg err"></p><button class="gl-btn" id="loginBtn">Sign in</button>
+</section>
+
+<section id="dash" class="hide">
+  <div style="display:flex;justify-content:space-between;align-items:center;padding-top:32px">
+    <h1 style="margin:0">Admin</h1><button class="gl-chip" id="out">Sign out</button></div>
+  <div class="ad-tabs"><button class="gl-chip on" data-t="tArt">Articles</button><button class="gl-chip" data-t="tSub">Subscribers</button></div>
+
+  <div id="tArt">
+    <div class="ad-card"><h2 id="fTitle">New article</h2>
+      <div class="ad-row"><div><label>Title *</label><input id="title" maxlength="150"></div>
+      <div><label>Slug * (locked after creation)</label><input id="slug" maxlength="100"></div></div>
+      <label>Excerpt</label><textarea id="excerpt" rows="2" maxlength="400"></textarea>
+      <label>Content * (## heading, - list, **bold**, [text](https://url))</label><textarea id="content" rows="12"></textarea>
+      <label>Image URL (https only, no uploads)</label><input id="imageUrl" placeholder="https://res.cloudinary.com/...">
+      <div class="ad-row"><div><label>Category</label><input id="category" maxlength="50"></div>
+      <div><label>Tags (comma separated)</label><input id="tags"></div></div>
+      <div class="ad-row"><div><label>Author</label><input id="author" maxlength="80" value="GLife Nigeria"></div>
+      <div><label>Status</label><select id="status"><option value="draft">Draft</option><option value="published">Published</option></select></div></div>
+      <div class="ad-row"><div><label>SEO title (≤70)</label><input id="seoTitle" maxlength="70"></div>
+      <div><label>SEO description (≤160)</label><input id="seoDescription" maxlength="160"></div></div>
+      <p id="fMsg" class="ad-msg"></p>
+      <button class="gl-btn" id="save">Save article</button> <button class="gl-chip" id="reset">Clear / New</button>
+    </div>
+    <div class="ad-card"><h2>All articles</h2><table class="ad-table"><thead><tr><th>Title</th><th>Status</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div>
+  </div>
+
+  <div id="tSub" class="hide"><div class="ad-card"><h2>Subscribers <span id="subCount" class="gl-meta"></span></h2>
+    <button class="gl-btn" id="exp">Export CSV</button>
+    <table class="ad-table" style="margin-top:16px"><thead><tr><th>Email</th><th>Status</th><th>Subscribed</th></tr></thead><tbody id="subRows"></tbody></table></div></div>
+</section></div>
+<script type="module" src="/assets/admin.js"></script>
+</body></html>
