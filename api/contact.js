@@ -59,7 +59,7 @@ export default async function handler(req, res) {
                 body: JSON.stringify({
 
                     from:
-                        "Your Website <noreply@yourdomain.com>",
+                        "glifenig.com <info@glifenig.com>",
 
                     to:
                         [process.env.RECEIVER_EMAIL],
@@ -136,7 +136,7 @@ export default async function handler(req, res) {
                 body: JSON.stringify({
 
                     from:
-                        "Your Website <noreply@yourdomain.com>",
+                        "glifenig.com <info@glifenig.com>",
 
                     to:
                         [email],
