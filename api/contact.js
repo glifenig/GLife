@@ -2,6 +2,7 @@ const RESEND_API_URL = "https://api.resend.com/emails";
 
 export default async function handler(req, res) {
 
+    // Only allow POST
     if (req.method !== "POST") {
         return res.status(405).json({
             success: false,
@@ -16,8 +17,9 @@ export default async function handler(req, res) {
             email,
             subject,
             message
-        } = req.body || {};
+        } = req.body;
 
+        // Validate
         if (!name || !email || !subject || !message) {
             return res.status(400).json({
                 success: false,
@@ -25,28 +27,25 @@ export default async function handler(req, res) {
             });
         }
 
-        if (!process.env.RESEND_API_KEY) {
-            console.error("RESEND_API_KEY is missing");
+        // Basic email validation
+        const emailRegex =
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-            return res.status(500).json({
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({
                 success: false,
-                message: "Email service is not configured."
+                message: "Please enter a valid email address."
             });
         }
 
-        if (!process.env.RECEIVER_EMAIL) {
-            console.error("RECEIVER_EMAIL is missing");
+        /*
+        ========================================
+        SEND EMAIL TO YOU
+        ========================================
+        */
 
-            return res.status(500).json({
-                success: false,
-                message: "Receiver email is not configured."
-            });
-        }
-
-
-        // Send email to YOU
-        const adminResponse = await fetch(
-            "https://api.resend.com/emails",
+        const adminEmail = await fetch(
+            RESEND_API_URL,
             {
                 method: "POST",
 
@@ -54,14 +53,13 @@ export default async function handler(req, res) {
                     "Authorization":
                         `Bearer ${process.env.RESEND_API_KEY}`,
 
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type": "application/json"
                 },
 
                 body: JSON.stringify({
 
                     from:
-                        "UpVestor <noreply@upvestor.club>",
+                        "Your Website <noreply@yourdomain.com>",
 
                     to:
                         [process.env.RECEIVER_EMAIL],
@@ -73,21 +71,21 @@ export default async function handler(req, res) {
                         `New Website Message: ${subject}`,
 
                     html: `
-                        <h2>New Website Message</h2>
+                        <h2>New Message From Your Website</h2>
 
                         <p>
                             <strong>Name:</strong>
-                            ${escapeHtml(name)}
+                            ${name}
                         </p>
 
                         <p>
                             <strong>Email:</strong>
-                            ${escapeHtml(email)}
+                            ${email}
                         </p>
 
                         <p>
                             <strong>Subject:</strong>
-                            ${escapeHtml(subject)}
+                            ${subject}
                         </p>
 
                         <hr>
@@ -95,23 +93,19 @@ export default async function handler(req, res) {
                         <h3>Message</h3>
 
                         <p>
-                            ${escapeHtml(message).replace(/\n/g, "<br>")}
+                            ${message.replace(/\n/g, "<br>")}
                         </p>
                     `
                 })
             }
         );
 
-
-        if (!adminResponse.ok) {
+        if (!adminEmail.ok) {
 
             const error =
-                await adminResponse.text();
+                await adminEmail.text();
 
-            console.error(
-                "Resend admin email error:",
-                error
-            );
+            console.error(error);
 
             return res.status(500).json({
                 success: false,
@@ -120,9 +114,14 @@ export default async function handler(req, res) {
         }
 
 
-        // Send confirmation email to CUSTOMER
-        const customerResponse = await fetch(
-            "https://api.resend.com/emails",
+        /*
+        ========================================
+        SEND CONFIRMATION TO CUSTOMER
+        ========================================
+        */
+
+        const customerEmail = await fetch(
+            RESEND_API_URL,
             {
                 method: "POST",
 
@@ -137,7 +136,7 @@ export default async function handler(req, res) {
                 body: JSON.stringify({
 
                     from:
-                        "UpVestor <noreply@upvestor.club>",
+                        "Your Website <noreply@yourdomain.com>",
 
                     to:
                         [email],
@@ -149,85 +148,73 @@ export default async function handler(req, res) {
                         "We received your message",
 
                     html: `
-                        <h2>Hello ${escapeHtml(name)},</h2>
+                        <h2>Hello ${name},</h2>
 
                         <p>
-                            Thank you for contacting UpVestor.
+                            Thank you for contacting us.
                         </p>
 
                         <p>
-                            We have received your message and
-                            will get back to you as soon as possible.
+                            We have received your message
+                            and will get back to you as soon
+                            as possible.
                         </p>
 
                         <hr>
 
-                        <h3>Your message</h3>
+                        <h3>Your Message</h3>
 
                         <p>
-                            ${escapeHtml(message).replace(/\n/g, "<br>")}
+                            ${message.replace(/\n/g, "<br>")}
                         </p>
 
                         <hr>
 
                         <p>
                             Thank you,<br>
-                            UpVestor Team
+                            Your Website Team
                         </p>
                     `
                 })
             }
         );
 
-
-        if (!customerResponse.ok) {
-
-            const error =
-                await customerResponse.text();
+        if (!customerEmail.ok) {
 
             console.error(
-                "Resend customer email error:",
-                error
+                await customerEmail.text()
             );
 
-            // Your email was already delivered,
-            // so the main operation succeeded.
+            // Your message was already delivered,
+            // so don't report total failure.
+            return res.status(200).json({
+                success: true,
+                message:
+                    "Your message was sent successfully."
+            });
         }
 
 
+        /*
+        ========================================
+        SUCCESS
+        ========================================
+        */
+
         return res.status(200).json({
             success: true,
-            message: "Your message was sent successfully."
+            message:
+                "Your message was sent successfully."
         });
-
 
     } catch (error) {
 
-        console.error(
-            "CONTACT API ERROR:",
-            error
-        );
+        console.error(error);
 
         return res.status(500).json({
             success: false,
-            message: "Internal server error."
+            message:
+                "Something went wrong. Please try again."
         });
     }
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| Prevent HTML injection
-|--------------------------------------------------------------------------
-*/
-
-function escapeHtml(value) {
-
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
 }
