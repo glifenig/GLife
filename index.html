@@ -665,6 +665,10 @@
         </div>
       </section>
 
+      <section class="wrap contact" id="Article">
+        <a href="/articles">Articles</a>
+      </section>
+
       <section class="wrap contact" id="contact">
         <span class="kicker reveal">09 / Contact</span>
         <hr class="caption-rule" />
@@ -792,18 +796,11 @@
             <!-- <a href="#">Sk</a>
             <a href="#">In</a> -->
           </div>
-          <form class="newsletter" id="subscriberForm">
-            <input
-              class="input"
-              type="email"
-               id="email" 
-              placeholder="Enter your email"
-              required
-              aria-label="Email address"
-            />
-            <button class="btn btn-primary" type="submit">Subscribe</button>
-          </form>
-<p id="subscribeMessage"></p>
+          <form class="newsletter" id="subscriberForm" data-glife-subscribe novalidate>
+  <input class="input" type="email" id="subscribeEmail" name="subscribeEmail" placeholder="Enter your email" required aria-label="Email address" />
+  <button class="btn btn-primary" type="submit">Subscribe</button>
+</form>
+<p id="subscribeMessage" role="status"></p>
         </div>
         <nav class="footer-links" aria-label="Footer">
           <div class="footer-col">
@@ -934,5 +931,6 @@
         targets.forEach((target) => observer.observe(target));
       })();
     </script>
+    <script type="module" src="/assets/subscribe.js"></script>
   </body>
 </html>
