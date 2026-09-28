@@ -9,13 +9,15 @@ document.head.appendChild(css);
 
 document.addEventListener("submit", async (e) => {
   const form = e.target.closest?.("[data-glife-subscribe]");
-  if (!form) return;                       // Contact form etc. are untouched
+  if (!form) return;                        // Contact form is never touched
   e.preventDefault(); e.stopImmediatePropagation();
 
   const input = form.querySelector('input[type="email"]');
   const btn = form.querySelector("button");
-  let msg = form.querySelector(".gl-sub-msg");
-  if (!msg) { msg = document.createElement("p"); msg.className = "gl-sub-msg"; msg.setAttribute("role", "status"); form.appendChild(msg); }
+  let msg = form.id === "subscriberForm" ? document.getElementById("subscribeMessage") : null;
+  if (!msg) msg = form.querySelector(".gl-sub-msg");
+  if (!msg) { msg = document.createElement("p"); form.appendChild(msg); msg.setAttribute("role", "status"); }
+  msg.classList.add("gl-sub-msg");
   const show = (t, s) => { msg.textContent = t; msg.dataset.state = s; };
 
   const email = input.value.trim().toLowerCase();
