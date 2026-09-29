@@ -60,7 +60,7 @@ $("slug").addEventListener("input", () => $("slug").dataset.touched = "1");
 $("save").onclick = async () => {
   const g = (id) => $(id).value.trim();
   const d = {
-    title: g("title").slice(0, 150), slug: editing || slugify(g("slug") || g("title")), excerpt: g("excerpt").slice(0, 400),
+    title: g("title").slice(0, 150), slug: editing || slugify(g("slug") || g("title")), excerpt: (g("excerpt") || g("content").replace(/[#*_`>\[\]()-]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 180)).slice(0, 400),
     content: g("content").slice(0, 60000), imageUrl: g("imageUrl"), category: g("category").slice(0, 50) || "General",
     tags: [...new Set(g("tags").split(",").map((t) => t.trim().toLowerCase().slice(0, 30)).filter(Boolean))].slice(0, 10),
     author: g("author").slice(0, 80) || "GLife Nigeria", status: g("status") === "published" ? "published" : "draft",
