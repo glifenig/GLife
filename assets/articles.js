@@ -1,4 +1,5 @@
 import { db } from "./glife-firebase.js";
+import { initEngage } from "./engage.js";
 import { collection, doc, getDoc, getDocs, query, where, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const app = document.getElementById("app");
@@ -99,8 +100,10 @@ async function view(slug) {
     <div class="gl-meta">${esc(a.author)} · ${fmt(when(a))} · ${mins(a.content)} min read</div>
     ${img(a.imageUrl) ? `<img class="gl-cover" src="${esc(img(a.imageUrl))}" alt="${esc(a.title)}">` : ""}
     <div class="gl-body">${render(a.content)}</div>
-    <div class="gl-tags">${(a.tags || []).map((t) => `<span class="gl-tag">#${esc(t)}</span>`).join("")}</div>${ctaForm}
+    <div class="gl-tags">${(a.tags || []).map((t) => `<span class="gl-tag">#${esc(t)}</span>`).join("")}</div><div id="engage"></div>${ctaForm}
     <div id="rel"></div></article>`;
+
+  initEngage(a.id, document.getElementById("engage"));
 
   try {
     const rel = (await published([where("category", "==", a.category)])).filter((r) => r.id !== a.id).slice(0, 3);
