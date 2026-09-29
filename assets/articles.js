@@ -33,13 +33,8 @@ const render = (t) => esc(t).split(/\n{2,}/).map((b) => {
   return `<p>${inline(b).replace(/\n/g, "<br>")}</p>`;
 }).join("");
 
-const card = (a, i = 0) => `<a class="gl-card" style="animation-delay:${Math.min(i, 8) * 60}ms" href="/articles/${encodeURIComponent(a.id)}">
-  <div class="gl-card-img">${img(a.imageUrl) ? `<img loading="lazy" src="${esc(img(a.imageUrl))}" alt="${esc(a.title)}">` : ""}</div>
-  <div class="gl-card-body"><span class="gl-tag">${esc(a.category)}</span><h3>${esc(a.title)}</h3><p>${esc(a.excerpt)}</p>
-  <small>${fmt(when(a))} · ${mins(a.content)} min read</small></div></a>`;
-
 const ctaForm = `<div class="gl-cta"><h3>Stay in the loop</h3><p>Get GLife Nigeria updates in your inbox.</p>
-  <form data-glife-subscribe novalidate><input type="email" placeholder="you@example.com" aria-label="Email" required><button type="submit">Subscribe</button></form></div>`;
+  <form data-glife-subscribe novalidate><input class="input" type="email" placeholder="you@example.com" aria-label="Email" required><button class="btn btn-primary" type="submit">Subscribe</button></form></div>`;
 
 async function published(extra = []) {
   const s = await getDocs(query(collection(db, "articles"), where("status", "==", "published"), ...extra, limit(100)));
@@ -50,7 +45,10 @@ async function list() {
   app.innerHTML = `<div class="gl-wrap"><div class="gl-skel" style="margin-top:80px"></div></div>`;
   let posts;
   try { posts = await published(); }
-  catch { app.innerHTML = `<div class="gl-wrap"><p class="gl-empty">We couldn't load articles right now. Please try again shortly.</p></div>`; return; }
+  catch (err) {
+    console.error("Articles load failed:", err);
+    app.innerHTML = `<div class="gl-wrap"><p class="gl-empty">We couldn't load articles right now. Please try again shortly.</p></div>`; return;
+  }
 
   const cats = ["All", ...new Set(posts.map((p) => p.category).filter(Boolean))];
   const st = { q: "", cat: "All" };
@@ -69,7 +67,7 @@ async function list() {
     $("feat").innerHTML = f ? `<a class="gl-feat" href="/articles/${encodeURIComponent(f.id)}"><div class="gl-card-img">${img(f.imageUrl) ? `<img src="${esc(img(f.imageUrl))}" alt="${esc(f.title)}" onerror="this.remove()">` : ""}</div>
   <div class="gl-card-body"><span class="gl-tag">Featured · ${esc(f.category)}</span><h2>${esc(f.title)}</h2><p>${esc(blurb(f))}</p><small>${fmt(when(f))} · ${mins(f.content)} min read</small></div></a>` : "";
     const rest = f ? rows.slice(1) : rows;
-    $("grid").innerHTML = rest.length ? rest.map(card).join("") : `<p class="gl-empty" style="grid-column:1/-1">No articles found.</p>`;
+    $("grid").innerHTML = rest.length ? rest.map(card).join("") : (f ? "" : `<p class="gl-empty" style="grid-column:1/-1">No articles found.</p>`);
   };
   $("q").addEventListener("input", (e) => { st.q = e.target.value.trim(); paint(); });
   $("chips").addEventListener("click", (e) => {
@@ -81,34 +79,35 @@ async function list() {
 
 async function view(slug) {
   let a;
-  try { const s = await getDoc(doc(db, "articles", slug)); if (s.exists() && s.data().status === "published") a = { id: s.id, ...s.data() }; } catch {}
+  try { const s = await getDoc(doc(db, "articles", slug)); if (s.exists() && s.data().status === "published") a = { id: s.id, ...s.data() }; } catch (err) { console.error(err); }
   if (!a) {
     meta("Article not found | GLife Nigeria", "This article could not be found.", "", location.href);
     app.innerHTML = `<div class="gl-wrap"><p class="gl-empty">Article not found. <a href="/articles" style="text-decoration:underline">Back to articles</a></p></div>`; return;
   }
   const url = `${location.origin}/articles/${a.id}`;
-  const desc = a.seoDescription || a.excerpt;
+  const desc = a.seoDescription || a.excerpt || blurb(a);
   meta(a.seoTitle || `${a.title} | GLife Nigeria`, desc, img(a.imageUrl), url);
   const ld = document.createElement("script"); ld.type = "application/ld+json";
   ld.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "Article", headline: a.title, description: desc,
     image: img(a.imageUrl) || undefined, author: { "@type": "Person", name: a.author }, mainEntityOfPage: url,
-    datePublished: a.publishedAt?.toDate?.().toISOString() });
+    datePublished: when(a)?.toDate?.().toISOString() });
   document.head.appendChild(ld);
 
   app.innerHTML = `<article class="gl-art"><a href="/articles" class="gl-meta">← All articles</a>
     <div style="margin-top:18px"><span class="gl-tag">${esc(a.category)}</span></div><h1>${esc(a.title)}</h1>
     <div class="gl-meta">${esc(a.author)} · ${fmt(when(a))} · ${mins(a.content)} min read</div>
-    ${img(a.imageUrl) ? `<img class="gl-cover" src="${esc(img(a.imageUrl))}" alt="${esc(a.title)}">` : ""}
+    ${img(a.imageUrl) ? `<img class="gl-cover" src="${esc(img(a.imageUrl))}" alt="${esc(a.title)}" onerror="this.remove()">` : ""}
     <div class="gl-body">${render(a.content)}</div>
-    <div class="gl-tags">${(a.tags || []).map((t) => `<span class="gl-tag">#${esc(t)}</span>`).join("")}</div><div id="engage"></div>${ctaForm}
+    <div class="gl-tags">${(a.tags || []).map((t) => `<span class="gl-tag">#${esc(t)}</span>`).join("")}</div>
+    <div id="engage"></div>${ctaForm}
     <div id="rel"></div></article>`;
 
-  initEngage(a.id, document.getElementById("engage"));
+  initEngage(a.id, document.getElementById("engage")).catch((err) => console.error("Engage failed:", err));
 
   try {
     const rel = (await published([where("category", "==", a.category)])).filter((r) => r.id !== a.id).slice(0, 3);
     if (rel.length) $("rel").innerHTML = `<h3>Related articles</h3><div class="gl-related">${rel.map(card).join("")}</div>`;
-  } catch {}
+  } catch (err) { console.error(err); }
 }
 
 const m = location.pathname.replace(/\/+$/, "").match(/^\/articles\/([^/]+)$/);
