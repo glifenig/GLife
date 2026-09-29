@@ -1,6 +1,7 @@
 :root{--gl-primary:#0a6cff;--gl-accent:#00c2a8;--gl-bg:#0b1220;--gl-card:#121b2e;--gl-text:#e8eefc;--gl-muted:#93a1bf;--gl-radius:16px}
-*{box-sizing:border-box}
-body.gl{margin:0;background:var(--gl-bg);color:var(--gl-text);font-family:inherit,system-ui,sans-serif;line-height:1.6}
+  .gl-page{padding-top:96px;min-height:70vh}
+  .gl-page a{color:inherit;text-decoration:none}
+  .gl-cta input.input{flex:1;min-width:220px;max-width:340px}
 .gl a{color:inherit;text-decoration:none}
 .gl-wrap{max-width:1150px;margin:0 auto;padding:0 20px}
 .gl-hero{padding:64px 0 24px;animation:glIn .6s both}
