@@ -1,5 +1,17 @@
-"rewrites": [
-  { "source": "/admin/articles", "destination": "/admin-articles.html" },
-  { "source": "/articles", "destination": "/articles.html" },
-  { "source": "/articles/**", "destination": "/articles.html" }
-]
+{
+  "hosting": {
+    "public": ".",
+    "ignore": ["firebase.json", "firestore.rules", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "/admin/articles", "destination": "/admin-articles.html" },
+      { "source": "/articles", "destination": "/articles.html" },
+      { "source": "/articles/**", "destination": "/articles.html" }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(js|css)",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+      }
+    ]
+  }
+}

@@ -4,7 +4,7 @@
 <meta name="robots" content="noindex,nofollow"><title>Admin · Articles | GLife Nigeria</title>
 <link rel="stylesheet" href="/assets/articles.css">
 </head>
-<body class="gl"><div class="gl-wrap">
+<body class="gl-admin"><div class="gl-wrap">
 <section id="login" class="ad-card hide" style="max-width:420px;margin:80px auto">
   <h2>Admin sign in</h2>
   <label>Email</label><input id="em" type="email" autocomplete="username">
@@ -21,9 +21,9 @@
     <div class="ad-card"><h2 id="fTitle">New article</h2>
       <div class="ad-row"><div><label>Title *</label><input id="title" maxlength="150"></div>
       <div><label>Slug * (locked after creation)</label><input id="slug" maxlength="100"></div></div>
-      <label>Excerpt</label><textarea id="excerpt" rows="2" maxlength="400"></textarea>
+      <label>Excerpt (leave blank to auto-generate)</label><textarea id="excerpt" rows="2" maxlength="400"></textarea>
       <label>Content * (## heading, - list, **bold**, [text](https://url))</label><textarea id="content" rows="12"></textarea>
-      <label>Image URL (https only, no uploads)</label><input id="imageUrl" placeholder="https://res.cloudinary.com/...">
+      <label>Image URL (direct https image link, no uploads)</label><input id="imageUrl" placeholder="https://images.unsplash.com/... or https://res.cloudinary.com/...">
       <div class="ad-row"><div><label>Category</label><input id="category" maxlength="50"></div>
       <div><label>Tags (comma separated)</label><input id="tags"></div></div>
       <div class="ad-row"><div><label>Author</label><input id="author" maxlength="80" value="GLife Nigeria"></div>
