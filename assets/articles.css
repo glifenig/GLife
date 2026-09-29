@@ -1,6 +1,18 @@
 :root{--gl-primary:#0a6cff;--gl-accent:#00c2a8;--gl-bg:#0b1220;--gl-card:#121b2e;--gl-text:#e8eefc;--gl-muted:#93a1bf;--gl-radius:16px}
  *{box-sizing:border-box}
 body.gl{margin:0;background:var(--gl-bg);color:var(--gl-text);font-family:inherit,system-ui,sans-serif;line-height:1.6}
+.gl-engage{margin:40px 0}
+.gl-like{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:999px;border:1px solid #24304d;background:none;color:var(--gl-text);font:inherit;cursor:pointer;transition:.2s}
+.gl-like:hover,.gl-like.on{border-color:#ef4444;color:#ef4444;transform:scale(1.04)}
+.gl-c-head{margin:32px 0 12px}
+.gl-cform{display:grid;gap:10px;position:relative;margin-bottom:24px}
+.gl-cform .input{width:100%}
+.gl-cform button{justify-self:start}
+.gl-comment{padding:14px 0;border-top:1px solid #24304d}
+.gl-comment p{margin:6px 0 0;color:var(--gl-muted)}
+.gl-c-top{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.gl-c-top span{color:var(--gl-muted);font-size:.85rem}
+.gl-c-del{margin-left:auto;background:none;border:1px solid #24304d;color:#ef4444;border-radius:8px;padding:3px 10px;cursor:pointer}
 .gl a{color:inherit;text-decoration:none}
 .gl-wrap{max-width:1150px;margin:0 auto;padding:0 20px}
 .gl-hero{padding:64px 0 24px;animation:glIn .6s both}
