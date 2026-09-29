@@ -7,6 +7,14 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const fmt = (t) => (t?.toDate ? t.toDate().toLocaleDateString("en-NG", { year: "numeric", month: "short", day: "numeric" }) : "");
 const mins = (t) => Math.max(1, Math.round((t || "").trim().split(/\s+/).length / 200));
 const img = (u) => (/^https:\/\//.test(u || "") ? u : "");
+const plain = (t) => String(t || "").replace(/[#*_`>\[\]()-]+/g, " ").replace(/\s+/g, " ").trim();
+const blurb = (a) => a.excerpt || (plain(a.content).slice(0, 150) + "…");
+const when = (a) => a.publishedAt || a.createdAt;
+
+const card = (a, i = 0) => `<a class="gl-card" style="animation-delay:${Math.min(i, 8) * 60}ms" href="/articles/${encodeURIComponent(a.id)}">
+  <div class="gl-card-img">${img(a.imageUrl) ? `<img loading="lazy" src="${esc(img(a.imageUrl))}" alt="${esc(a.title)}" onerror="this.remove()">` : ""}</div>
+  <div class="gl-card-body"><span class="gl-tag">${esc(a.category)}</span><h3>${esc(a.title)}</h3><p>${esc(blurb(a))}</p>
+  <small>${fmt(when(a))} · ${mins(a.content)} min read</small></div></a>`;
 
 function meta(title, desc, image, url) {
   document.title = title;
@@ -27,14 +35,14 @@ const render = (t) => esc(t).split(/\n{2,}/).map((b) => {
 const card = (a, i = 0) => `<a class="gl-card" style="animation-delay:${Math.min(i, 8) * 60}ms" href="/articles/${encodeURIComponent(a.id)}">
   <div class="gl-card-img">${img(a.imageUrl) ? `<img loading="lazy" src="${esc(img(a.imageUrl))}" alt="${esc(a.title)}">` : ""}</div>
   <div class="gl-card-body"><span class="gl-tag">${esc(a.category)}</span><h3>${esc(a.title)}</h3><p>${esc(a.excerpt)}</p>
-  <small>${fmt(a.publishedAt)} · ${mins(a.content)} min read</small></div></a>`;
+  <small>${fmt(when(a))} · ${mins(a.content)} min read</small></div></a>`;
 
 const ctaForm = `<div class="gl-cta"><h3>Stay in the loop</h3><p>Get GLife Nigeria updates in your inbox.</p>
   <form data-glife-subscribe novalidate><input type="email" placeholder="you@example.com" aria-label="Email" required><button type="submit">Subscribe</button></form></div>`;
 
 async function published(extra = []) {
   const s = await getDocs(query(collection(db, "articles"), where("status", "==", "published"), ...extra, limit(100)));
-  return s.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (b.publishedAt?.seconds || 0) - (a.publishedAt?.seconds || 0));
+  return s.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (when(b)?.seconds || 0) - (when(a)?.seconds || 0));
 }
 
 async function list() {
@@ -55,10 +63,10 @@ async function list() {
     const q = st.q.toLowerCase();
     const rows = posts.filter((p) => (st.cat === "All" || p.category === st.cat) &&
       (!q || [p.title, p.excerpt, p.category, (p.tags || []).join(" ")].join(" ").toLowerCase().includes(q)));
-    const showFeat = !q && st.cat === "All" && rows.length > 2;
+    const showFeat = !q && st.cat === "All" && rows.length > 1;
     const f = showFeat ? rows[0] : null;
-    $("feat").innerHTML = f ? `<a class="gl-feat" href="/articles/${encodeURIComponent(f.id)}"><div class="gl-card-img">${img(f.imageUrl) ? `<img src="${esc(img(f.imageUrl))}" alt="${esc(f.title)}">` : ""}</div>
-      <div class="gl-card-body"><span class="gl-tag">Featured · ${esc(f.category)}</span><h2>${esc(f.title)}</h2><p>${esc(f.excerpt)}</p><small>${fmt(f.publishedAt)} · ${mins(f.content)} min read</small></div></a>` : "";
+    $("feat").innerHTML = f ? `<a class="gl-feat" href="/articles/${encodeURIComponent(f.id)}"><div class="gl-card-img">${img(f.imageUrl) ? `<img src="${esc(img(f.imageUrl))}" alt="${esc(f.title)}" onerror="this.remove()">` : ""}</div>
+  <div class="gl-card-body"><span class="gl-tag">Featured · ${esc(f.category)}</span><h2>${esc(f.title)}</h2><p>${esc(blurb(f))}</p><small>${fmt(when(f))} · ${mins(f.content)} min read</small></div></a>` : "";
     const rest = f ? rows.slice(1) : rows;
     $("grid").innerHTML = rest.length ? rest.map(card).join("") : `<p class="gl-empty" style="grid-column:1/-1">No articles found.</p>`;
   };
@@ -88,7 +96,7 @@ async function view(slug) {
 
   app.innerHTML = `<article class="gl-art"><a href="/articles" class="gl-meta">← All articles</a>
     <div style="margin-top:18px"><span class="gl-tag">${esc(a.category)}</span></div><h1>${esc(a.title)}</h1>
-    <div class="gl-meta">${esc(a.author)} · ${fmt(a.publishedAt)} · ${mins(a.content)} min read</div>
+    <div class="gl-meta">${esc(a.author)} · ${fmt(when(a))} · ${mins(a.content)} min read</div>
     ${img(a.imageUrl) ? `<img class="gl-cover" src="${esc(img(a.imageUrl))}" alt="${esc(a.title)}">` : ""}
     <div class="gl-body">${render(a.content)}</div>
     <div class="gl-tags">${(a.tags || []).map((t) => `<span class="gl-tag">#${esc(t)}</span>`).join("")}</div>${ctaForm}
