@@ -41,6 +41,7 @@
     <meta name="theme-color" content="#000000" />
     <link rel="icon" href="assets/img/logo.png" />
     <link rel="stylesheet" href="assets/css/style.css" />
+    <link rel="stylesheet" href="/assets/articles.css" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -665,9 +666,15 @@
         </div>
       </section>
 
-      <section class="wrap contact" id="Article">
-        <a href="/articles">Articles</a>
-      </section>
+      <section class="wrap" id="articles" hidden>
+  <span class="kicker">Insights / Latest articles</span>
+  <hr class="caption-rule" />
+  <div class="gl-home-head">
+    <p>Practical ideas on web, mobile and custom software from the Glife team.</p>
+    <a class="btn btn-ghost" href="/articles">View all articles</a>
+  </div>
+  <div class="gl-grid" id="home-articles"></div>
+</section>
 
       <section class="wrap contact" id="contact">
         <span class="kicker reveal">09 / Contact</span>
@@ -932,5 +939,6 @@
       })();
     </script>
     <script type="module" src="/assets/subscribe.js"></script>
+    <script type="module" src="/assets/home-articles.js"></script>
   </body>
 </html>
