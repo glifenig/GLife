@@ -1,7 +1,7 @@
 import { initEngage } from "./engage.js";
 import { db } from "./glife-firebase.js";
 import { doc, getDoc, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { esc, fmt, mins, img, blurb, when, card, statsHtml, hydrateStats, published } from "./shared.js";
+import { esc, fmt, mins, img, blurb, when, card, statsHtml, hydrateStats, published, articleUrl, listUrl } from "./shared.js";
 
 const app = document.getElementById("app");
 const $ = (id) => document.getElementById(id);
@@ -51,7 +51,7 @@ async function list() {
       (!q || [p.title, p.excerpt, p.category, p.author, (p.tags || []).join(" ")].join(" ").toLowerCase().includes(q)));
     const f = (!q && st.cat === "All" && rows.length > 1) ? rows[0] : null;
 
-    $("feat").innerHTML = f ? `<a class="gl-feat" href="/articles/${encodeURIComponent(f.id)}">
+    $("feat").innerHTML = f ? `<a class="gl-feat" href="${articleUrl(f.id)}">
       <div class="gl-card-img">${img(f.imageUrl) ? `<img src="${esc(img(f.imageUrl))}" alt="${esc(f.title)}" onerror="this.remove()">` : ""}</div>
       <div class="gl-card-body"><span class="gl-tag">Featured · ${esc(f.category)}</span><h2>${esc(f.title)}</h2><p>${esc(blurb(f))}</p>
       <div class="gl-card-foot"><small>${fmt(when(f))} · ${mins(f.content)} min read</small>${statsHtml(f.id)}</div></div></a>` : "";
@@ -78,17 +78,18 @@ async function view(slug) {
   app.innerHTML = SKELETON;
   let a;
   try {
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug) || slug.length > 100) throw new Error("bad slug");
     const s = await getDoc(doc(db, "articles", slug));
     if (s.exists() && s.data().status === "published") a = { id: s.id, ...s.data() };
   } catch (err) { console.error("Article load failed:", err); }
 
   if (!a) {
     meta("Article not found | GLife Nigeria", "This article could not be found.", "", location.href);
-    app.innerHTML = `<div class="gl-wrap"><p class="gl-empty">Article not found. <a href="/articles" style="text-decoration:underline">Back to articles</a></p></div>`;
+    app.innerHTML = `<div class="gl-wrap"><p class="gl-empty">Article not found. <a href="${listUrl}" style="text-decoration:underline">Back to articles</a></p></div>`;
     return;
   }
 
-  const url = `${location.origin}/articles/${a.id}`;
+  const url = location.origin + articleUrl(a.id);
   const desc = a.seoDescription || a.excerpt || blurb(a);
   meta(a.seoTitle || `${a.title} | GLife Nigeria`, desc, img(a.imageUrl), url);
 
@@ -100,7 +101,7 @@ async function view(slug) {
   });
   document.head.appendChild(ld);
 
-  app.innerHTML = `<article class="gl-art"><a href="/articles" class="gl-meta">← All articles</a>
+  app.innerHTML = `<article class="gl-art"><a href="${listUrl}" class="gl-meta">← All articles</a>
     <div style="margin-top:18px"><span class="gl-tag">${esc(a.category)}</span></div><h1>${esc(a.title)}</h1>
     <div class="gl-meta">${esc(a.author)} · ${fmt(when(a))} · ${mins(a.content)} min read</div>
     ${img(a.imageUrl) ? `<img class="gl-cover" src="${esc(img(a.imageUrl))}" alt="${esc(a.title)}" onerror="this.remove()">` : ""}
@@ -121,5 +122,7 @@ async function view(slug) {
 }
 
 /* ================= router ================= */
-const m = location.pathname.replace(/\/+$/, "").match(/^\/articles\/([^/]+)$/);
-m ? view(decodeURIComponent(m[1])) : list();
+const byQuery = new URLSearchParams(location.search).get("a");
+const byPath = location.pathname.replace(/\/+$/, "").match(/^\/articles\/([^/]+)$/);
+const slug = (byQuery || (byPath && decodeURIComponent(byPath[1])) || "").trim().toLowerCase();
+slug ? view(slug) : list();

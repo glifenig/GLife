@@ -11,6 +11,13 @@ export const plain = (t) => String(t || "").replace(/[#*_`>\[\]()-]+/g, " ").rep
 export const blurb = (a) => a.excerpt || (plain(a.content).slice(0, 150) + "…");
 export const when = (a) => a.publishedAt || a.createdAt;
 
+/* Article links.
+   CLEAN_URLS=false -> /articles.html?a=my-slug  (works on ANY host, no server rewrites needed)
+   CLEAN_URLS=true  -> /articles/my-slug         (needs the Firebase Hosting rewrites to be deployed) */
+export const CLEAN_URLS = false;
+export const articleUrl = (id) => CLEAN_URLS ? `/articles/${encodeURIComponent(id)}` : `/articles.html?a=${encodeURIComponent(id)}`;
+export const listUrl = CLEAN_URLS ? "/articles" : "/articles.html";
+
 /* ---------- published articles (newest first) ---------- */
 export async function published(extra = [], max = 100) {
   const s = await getDocs(query(collection(db, "articles"), where("status", "==", "published"), ...extra, limit(max)));
@@ -77,7 +84,7 @@ export function hydrateStats(root = document) {
 }
 
 /* ---------- article card (used on /articles, the homepage and related articles) ---------- */
-export const card = (a, i = 0) => `<a class="gl-card" style="animation-delay:${Math.min(i, 8) * 60}ms" href="/articles/${encodeURIComponent(a.id)}">
+export const card = (a, i = 0) => `<a class="gl-card" style="animation-delay:${Math.min(i, 8) * 60}ms" href="${articleUrl(a.id)}">
   <div class="gl-card-img">${img(a.imageUrl) ? `<img loading="lazy" src="${esc(img(a.imageUrl))}" alt="${esc(a.title)}" onerror="this.remove()">` : ""}</div>
   <div class="gl-card-body"><span class="gl-tag">${esc(a.category)}</span><h3>${esc(a.title)}</h3><p>${esc(blurb(a))}</p>
   <div class="gl-card-foot"><small>${fmt(when(a))} · ${mins(a.content)} min read</small>${statsHtml(a.id)}</div></div></a>`;
