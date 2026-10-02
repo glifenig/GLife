@@ -23,6 +23,10 @@ const render = (t) => esc(String(t || "").replace(/\r\n?/g, "\n")).split(/\n{2,}
   return `<p>${inline(b).replace(/\n/g, "<br>")}</p>`;
 }).join("");
 
+
+const ctaForm = `<div class="gl-cta"><h3>Stay in the loop</h3><p>Get GLife Nigeria updates in your inbox.</p>
+  <form data-glife-subscribe novalidate><input class="input" type="email" placeholder="you@example.com" aria-label="Email" required><button class="btn btn-primary" type="submit">Subscribe</button></form></div>`;
+
 /* ================= /articles : all articles ================= */
 async function list() {
   app.innerHTML = SKELETON;
