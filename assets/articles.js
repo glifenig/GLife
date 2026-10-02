@@ -24,8 +24,6 @@ const render = (t) => esc(String(t || "").replace(/\r\n?/g, "\n")).split(/\n{2,}
 }).join("");
 
 
-const ctaForm = `<div class="gl-cta"><h3>Stay in the loop</h3><p>Get GLife Nigeria updates in your inbox.</p>
-  <form data-glife-subscribe novalidate><input class="input" type="email" placeholder="you@example.com" aria-label="Email" required><button class="btn btn-primary" type="submit">Subscribe</button></form></div>`;
 
 /* ================= /articles : all articles ================= */
 async function list() {
@@ -44,7 +42,7 @@ async function list() {
     <section class="gl-hero"><h1>GLife Articles</h1><p>Insights, updates and practical guides from the GLife Nigeria team.</p>
     <input class="gl-search" id="q" type="search" placeholder="Search articles…" aria-label="Search articles"></section>
     <div class="gl-chips" id="chips">${cats.map((c, i) => `<button class="gl-chip${i ? "" : " on"}" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>
-    <div id="feat"></div><div class="gl-grid" id="grid"></div>${ctaForm}</div>`;
+    <div id="feat"></div><div class="gl-grid" id="grid"></div></div>`;
 
   const paint = () => {
     const q = st.q.toLowerCase();
@@ -108,7 +106,7 @@ async function view(slug) {
     ${img(a.imageUrl) ? `<img class="gl-cover" src="${esc(img(a.imageUrl))}" alt="${esc(a.title)}" onerror="this.remove()">` : ""}
     <div class="gl-body">${render(a.content)}</div>
     <div class="gl-tags">${(a.tags || []).map((t) => `<span class="gl-tag">#${esc(t)}</span>`).join("")}</div>
-    <div id="engage"></div>${ctaForm}
+    <div id="engage"></div>
     <div id="rel"></div></article>`;
 
   initEngage(a.id, $("engage")).catch((err) => console.error("Likes/comments failed:", err));
